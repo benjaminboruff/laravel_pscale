@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\MoodController;
+use App\Http\Controllers\EntryController;
+use App\Http\Controllers\HomeController;
+// use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,16 +17,15 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index']);
+Route::resource('moods', MoodController::class);
+Route::resource('entries', EntryController::class);
 
-Route::get('/test-database', function () {
-    try {
-        DB::connection()->getPdo();
-        print_r("Connected successfully to: " . DB::connection()->getDatabaseName());
-    } catch (\Exception $e) {
-        die("Could not connect to the database.  Please check your configuration. Error:" . $e );
-    }
-});
-
+// Route::get('/test-database', function () {
+//     try {
+//         DB::connection()->getPdo();
+//         print_r("Connected successfully to: " . DB::connection()->getDatabaseName());
+//     } catch (\Exception $e) {
+//         die("Could not connect to the database.  Please check your configuration. Error:" . $e );
+//     }
+// });
