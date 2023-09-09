@@ -106,7 +106,7 @@ class EntryController extends Controller
         // Date must be in format Y-M-D. Must also not already exist in entries table date column
         // Selected mood_id must exist in the moods table under column id
         $request->validate([
-            'date' => 'required|date_format:Y-m-d|unique:entries,date' . $entry->id,
+            'date' => 'required|date_format:Y-m-d|unique:entries,date,' . $entry->id,
             'notes' => 'string|nullable',
             'mood_id' => 'required|exists:moods,id',
         ]);
