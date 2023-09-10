@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mood;
+use App\Models\Entry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -46,7 +47,6 @@ class MoodController extends Controller
         ]);
 
         Mood::create($request->all());
-        Cache::put('moods', $request->all(), 3600);
 
         return redirect()->route('moods.index')
             ->with('success', 'Mood created.');
@@ -72,6 +72,11 @@ class MoodController extends Controller
      */
     public function edit(Mood $mood)
     {
+        if ($mood->name == "Unknown") {
+            return redirect()->route('moods.show', [$mood->id])
+                ->with('failed', 'Mood cannot be updated.');
+        }
+
         return view('moods.edit')
             ->with('mood', $mood);
     }
@@ -90,11 +95,17 @@ class MoodController extends Controller
             'color' => 'required|string',
         ]);
 
-        $updatedMood = $request->all();
-        $mood->update($updatedMood);
+        if ($mood->name == "Unknown") {
+            return redirect()->route('moods.show', [$mood->id])
+                ->with('failed', 'Mood cannot be updated.');
+        } else {
+            $updatedMood = $request->all();
+            $mood->update($updatedMood);
+            Cache::forget('moods');
 
-        return redirect()->route('moods.show', [$mood->id])
-            ->with('success', 'Mood updated.');
+            return redirect()->route('moods.show', [$mood->id])
+                ->with('success', 'Mood updated.');
+        }
     }
 
     /**
@@ -105,10 +116,20 @@ class MoodController extends Controller
      */
     public function destroy(Mood $mood)
     {
-        $mood->delete();
-        Cache::put('moods', $mood, 0);
+        if ($mood->name == "Unknown") {
+            return redirect()->route('moods.index')
+                ->with('failed', 'Mood cannot be deleted.');
+        } else {
+            $unknownMood = Mood::where('name', "Unknown")->first();
 
-        return redirect()->route('moods.index')
-            ->with('success', 'Mood deleted.');
+            Entry::where('mood_id', $mood->id)
+                ->update(['mood_id' => $unknownMood->id]);
+
+            $mood->delete();
+            Cache::flush();
+
+            return redirect()->route('moods.index')
+                ->with('success', 'Mood deleted.');
+        }
     }
 }
