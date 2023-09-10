@@ -45,13 +45,21 @@
                             </td>
 
                             <td class="px-4 py-4 text-right text-sm font-medium">
+                                @if ( $mood->name == "Unknown" )
+                                <a href="/moods/{{ $mood->id }}/edit" class="text-gray-400 pointer-events-none">Edit</a>
+                                @else
                                 <a href="/moods/{{ $mood->id }}/edit" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                @endif
                             </td>
                             <td class="px-4 py-4 text-right text-sm font-medium">
                                 <form action="{{ route('moods.destroy', $mood->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
+                                    @if ( $mood->name == "Unknown" )
+                                    <button type="submit" class="text-gray-400 pointer-events-none">Delete</button>
+                                    @else
                                     <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                    @endif
                                 </form>
                             </td>
                         </tr>
