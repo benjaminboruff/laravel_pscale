@@ -73,8 +73,8 @@ class MoodController extends Controller
     public function edit(Mood $mood)
     {
         if ($mood->name == "Unknown") {
-            return redirect()->route('moods.show', [$mood->id])
-                ->with('failed', 'Mood cannot be updated.');
+            return redirect()->route('moods.index')
+                ->withErrors(['failed' => 'Unknown mood cannot be edited.']);
         }
 
         return view('moods.edit')
@@ -118,7 +118,7 @@ class MoodController extends Controller
     {
         if ($mood->name == "Unknown") {
             return redirect()->route('moods.index')
-                ->with('failed', 'Mood cannot be deleted.');
+                ->withErrors(['failed' => 'Unknown mood cannot be deleted.']);
         } else {
             $unknownMood = Mood::where('name', "Unknown")->first();
 
