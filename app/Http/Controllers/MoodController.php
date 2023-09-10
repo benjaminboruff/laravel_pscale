@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Mood;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+
 
 class MoodController extends Controller
 {
@@ -44,8 +46,9 @@ class MoodController extends Controller
         ]);
 
         Mood::create($request->all());
+        Cache::put('moods', $request->all(), 3600);
 
-        return redirect()->route('entries.mood')
+        return redirect()->route('moods.index')
             ->with('success', 'Mood created.');
     }
 
@@ -69,7 +72,8 @@ class MoodController extends Controller
      */
     public function edit(Mood $mood)
     {
-        return view('moods.edit', $mood);
+        return view('moods.edit')
+            ->with('mood', $mood);
     }
 
     /**
@@ -102,6 +106,7 @@ class MoodController extends Controller
     public function destroy(Mood $mood)
     {
         $mood->delete();
+        Cache::put('moods', $mood, 0);
 
         return redirect()->route('moods.index')
             ->with('success', 'Mood deleted.');
