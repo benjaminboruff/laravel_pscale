@@ -8,9 +8,15 @@
             @foreach($entries as $entry)
             <a href="/entries/{{$entry->id}}">
                 <div class="w-16 h-16 justify-center items-center flex" style="background-color:{{ $entry->mood->color }}">
+                    @if ($entry->mood->color == "#000000")
+                    <span class="text-white text-lg">
+                        {{ \Carbon\Carbon::parse($entry->date)->format('m/d') }}
+                    </span>
+                    @else
                     <span class="text-black text-lg">
                         {{ \Carbon\Carbon::parse($entry->date)->format('m/d') }}
                     </span>
+                    @endif
                 </div>
             </a>
             @endforeach
