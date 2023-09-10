@@ -59,12 +59,19 @@
                     </tbody>
                 </table>
             </div>
+            @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 mt-8 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li><strong class="font-semibold">{{ $error }}</strong></li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
         </div>
     </div>
 </div>
-
 </body>
-
 
 </html>
 @endsection
